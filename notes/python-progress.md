@@ -19,8 +19,10 @@
 ## Chapter 5: Lists
 - Date: 05-05-2026
 - What I learned: I do remember how lists work and that you can select an item from a list by using []. That helped a lot. Lists with for loops and if/else statements are going better and better. I do require some scaffolding and handholding with questions that want to put words of the lists in rows with spaces between them.
-- Date: 11:06-2026
+- Date: 11-06-2026
 - What I learned: Lists and function methods is something I am starting to understand, futurecoder is really good at explaining how it works and I am going through the assignments and exercises pretty easily.
+- Date: 16-06-2026
+- Learned more about lists and function methods and it's starting to click. Then I got a tutorial on how to google things... well I don't, I qwant things.
 
 ## Chapter 6: A Bit More About Strings
 - Date: 
