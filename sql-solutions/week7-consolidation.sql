@@ -140,3 +140,99 @@ FROM all_dates
 JOIN launch_dates ON all_dates.card_name = launch_dates.card_name
 AND all_dates.release_date = launch_dates.launch_date
 ORDER BY issued_amount DESC
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+--Wednesday — LAG + Mixed Concepts 
+
+--Problem 1: "Y-on-Y Growth Rate" (Wayfair Hard)
+--Step 1: Calculate the total spend per product per year.
+--Step 2: Add previous year's spend using LAG
+--Step 3: Calculate the growth percentage
+
+WITH total_spend_per_year AS (
+  SELECT
+    EXTRACT(YEAR FROM transaction_date) AS d_year,
+    product_id,
+    SUM(spend) AS total_spend
+  FROM user_transactions
+  GROUP BY product_id, d_year
+),
+total_spend_prev_year AS (
+  SELECT
+    d_year,
+    product_id,
+    total_spend,
+    LAG(total_spend) OVER (PARTITION BY product_id ORDER BY d_year) AS prev_year
+  FROM total_spend_per_year
+)
+SELECT
+  d_year AS year,
+  product_id,
+  total_spend AS curr_year_spend,
+  prev_year AS prev_year_spend,
+  ROUND((total_spend-prev_year) / prev_year *100, 2) AS yoy_rate
+FROM total_spend_prev_year
+ORDER BY product_id, d_year;
+
+
+--Problem 2: "Server Utilization Time" (Amazon Hard)
+--Step 1: Pair each start time with its corresponding stop time per server
+--Step 2: Calculate uptime per session
+--Step 3: SUM all durations and convert to full days
+
+WITH session_time AS (
+  SELECT
+    server_id,
+    status_time,
+    session_status,
+    LEAD(status_time) OVER (PARTITION BY server_id ORDER BY status_time) AS server_session
+  FROM server_utilization
+),
+uptime_session AS (
+  SELECT
+    server_id,
+    status_time,
+    server_session,
+    EXTRACT(EPOCH FROM (server_session - status_time)) AS uptime
+  FROM session_time
+  WHERE session_status = 'start'
+)
+SELECT
+  FLOOR(SUM(uptime)/86400) AS total_uptime_days
+FROM uptime_session;
+
+
+--Problem 3: "Histogram of Users and Purchases" (Walmart Medium)
+--Step 1: Find the most recent transaction date per user
+--Step 2: Calculate the number of products bought on that specific date
+
+WITH recent_transaction AS (
+  SELECT
+    user_id,
+    MAX(transaction_date) AS recent_date
+  FROM user_transactions
+  GROUP BY user_id
+)
+SELECT
+  recent_date,
+  recent_transaction.user_id,
+  COUNT(user_transactions.product_id) AS purchase_count
+FROM recent_transaction
+JOIN user_transactions ON recent_transaction.user_id = user_transactions.user_id
+AND user_transactions.transaction_date = recent_transaction.recent_date
+GROUP BY recent_date, recent_transaction.user_id
+ORDER BY recent_date
+
+
+--https://pgexercises.com/questions/aggregates/countmembers.html
+--Question
+--Produce a list of member names, with each row containing the total member count. Order by join date, and include guest members. 
+
+SELECT
+	COUNT(memid) OVER () AS count,
+	firstname,
+	surname
+FROM cd.members
+ORDER BY joindate
