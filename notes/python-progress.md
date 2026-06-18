@@ -23,7 +23,13 @@
 - What I learned: Lists and function methods is something I am starting to understand, futurecoder is really good at explaining how it works and I am going through the assignments and exercises pretty easily.
 - Date: 16-06-2026
 - Learned more about lists and function methods and it's starting to click. Then I got a tutorial on how to google things... well I don't, I qwant things.
+- Date: 18-06-2026
+- I finished lists today, learned about how to understand python tutor's function, == vs is and having multiple names for a value. These weren't too hard and I got through them pretty easily.
 
 ## Chapter 6: A Bit More About Strings
-- Date: 
-- What I learned: ...
+- Date: 18-06-2026
+- What I learned: Fun little chapter, single and double quotes followed up by an exercise with f stings. Very easy to follow and understand.
+
+## Chapter 7: Nested Loops
+- Date:
+- 

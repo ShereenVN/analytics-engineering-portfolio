@@ -236,3 +236,52 @@ SELECT
 	surname
 FROM cd.members
 ORDER BY joindate
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+--Thursday — The Hard Ones
+
+--Problem 1: "Median Google Search Frequency" (Google Hard)
+--Step 1: CTE that created an expanded list of all searches for the amount of users.
+--Step 2: Calculate the median using 50th percentile and then use decimals to round it to one decimal.
+
+WITH expanded AS (
+  SELECT searches
+  FROM search_frequency
+  JOIN GENERATE_SERIES(1, num_users) ON true
+)
+SELECT ROUND(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY searches)::DECIMAL, 1) AS median
+FROM expanded
+
+
+--Problem 2: "Active User Retention" (Facebook Hard)
+--Step 1: A CTE to calculate the activities in july
+--Step 2: A CTE to calculate the activities in june
+--Step 3: Select distinct users that are in both CTE's.
+
+WITH activity_july AS (
+  SELECT
+    DISTINCT user_id
+  FROM user_actions
+  WHERE EXTRACT(MONTH FROM event_date) = 7
+  AND EXTRACT(YEAR FROM event_date) = 2022
+),
+activity_june AS (
+  SELECT
+    DISTINCT user_id
+  FROM user_actions
+  WHERE EXTRACT(MONTH FROM event_date) = 6
+  AND EXTRACT(YEAR FROM event_date) = 2022
+)
+SELECT
+  7 AS month,
+  COUNT(DISTINCT activity_july.user_id) AS monthly_active_users
+FROM activity_july
+JOIN activity_june ON activity_july.user_id = activity_june.user_id
+
+
+--Problem 3: "International Call Percentage" (Verizon Medium)
+-- Already completed this and the code is still in Datalemur.
+
+
