@@ -285,3 +285,24 @@ JOIN activity_june ON activity_july.user_id = activity_june.user_id
 -- Already completed this and the code is still in Datalemur.
 
 
+
+------------------------------------------------------------------------------------------------------------------------------------
+--Friday — Full Challenge Day
+
+
+--Problem 1: "Second Highest Salary" (FAANG Medium)
+--Step 1: Rank the salaries in a CTE
+--Step 2: Select the second highest salary by filtering for rank 2
+
+WITH ranked_salary AS (
+  SELECT
+    salary,
+    ROW_NUMBER() OVER (ORDER BY salary DESC) AS rank_salary
+  FROM employee
+)
+SELECT
+ salary AS second_highest_salary
+FROM ranked_salary
+WHERE rank_salary = 2
+
+
